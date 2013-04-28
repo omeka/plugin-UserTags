@@ -1,0 +1,30 @@
+input#tags {
+	margin-left: 6px;
+	width: auto;
+}
+
+span.ui-helper-hidden-accessible {
+	display:none;
+}
+
+li.ui-menu-item > a:hover {
+	color: black;
+}
+
+div.user-tags {
+	min-height: 280px;
+}
+
+div.user-tags p {
+	margin: 0;
+}
+
+
+div.user-tags-general span.user-tags-tag {
+	cursor: pointer;
+}
+
+div.user-tags-my > span.remove {
+	margin-left: 3px;
+	cursor: pointer;
+}

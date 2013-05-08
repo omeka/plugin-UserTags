@@ -9,9 +9,10 @@ var UserTags = {
         },
         
         addMyTagResponseHandler : function(response, status, jqx) {
-            var myTagsEl = jQuery('div.user-tags-my');
+            var myTagsEl = jQuery('div.user-tags-my ul');
             var html = myTagsEl.html();
             myTagsEl.html(html + response.html);
+            jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
         },
         
         removeMyTag : function() {
@@ -24,8 +25,7 @@ var UserTags = {
         removeMyTagResponseHandler : function(response, status, jqx) {
             var elId = '#user-tags-tag-id-' + response.removed;
             var removeSpan = jQuery(elId);
-            removeSpan.prev('a').remove();
-            removeSpan.remove();
+            removeSpan.parent().remove();
         },
         
         addNewTags : function() {
@@ -93,10 +93,8 @@ UserTags.tagChoices = function () {
     });
 };
 
-
-
 jQuery(document).ready(function() {
-   jQuery('div.user-tags-general > span.user-tags-tag').click(UserTags.addMyTag)
+   jQuery('div.user-tags-general span.user-tags-tag').click(UserTags.addMyTag)
    jQuery('button#user-tags-submit').click(UserTags.addNewTags);
    jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
    UserTags.tagChoices()

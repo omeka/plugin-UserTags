@@ -69,13 +69,20 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
         if($user = current_user()) {
             $view = $args['view'];
             $item = $args['item'];        
-            $myTags = $this->_db->getTable('UserRecordsTag')->findTagsBy(array('record'=>$item));
+            $myTags = $this->_db->getTable('UserRecordsTag')->findTagsBy(array('record'=>$item, 'user'=>$user));
+            
             //need to remove itemTags that are mine from the list to display
             $myTagsIds = array();
             foreach($myTags as $tag) {
                 $myTagsIds[] = $tag->id;
             }
             $itemTags = $item->Tags;
+            
+            foreach($itemTags as $index=>$itemTag) {
+                if(in_array($itemTag->id, $myTagsIds)) {
+                    unset($itemTags[$index]);
+                }
+            }
             
             $html = "<div class='user-tags'>";
             $html .= '<h2>My tags</h2>';
@@ -109,7 +116,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
     
     /**
      * Add the UserRecordTag when a tag is added. If the user role's tags are private, also delete the records_tags row
-     * @param unknown_type $args
+     * @param array $args
      */
     
     public function hookAddItemTag($args)
@@ -124,11 +131,12 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
                 $userRecordsTag->tag_id = $tag->id;
                 $userRecordsTag->record_type = 'Item';
                 $userRecordsTag->record_id = $item->id;
-                $userRecordsTag->records_tag_id = $recordsTag->id;
                 $userRecordsTag->save();
                 //kill the record from records_tags. Oh records_tags row, we hardly knew ye
                 $recordsTag = $recordsTagsTable->findForRecordAndTag($item, $tag);
-                $recordsTag->delete();
+                if($recordsTag) {
+                    $recordsTag->delete();
+                }
             }                
         }
     }
@@ -176,7 +184,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
     private function _userItemTagString($tags, $link=true)
     {
         $delimiter = get_option('tag_delimiter') . ' ';
-        
+
         if (empty($tags)) {
             return '';
         }

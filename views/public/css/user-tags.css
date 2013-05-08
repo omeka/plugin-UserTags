@@ -24,7 +24,7 @@ div.user-tags-general span.user-tags-tag {
 	cursor: pointer;
 }
 
-div.user-tags-my > span.remove {
+div.user-tags-my span.remove {
 	margin-left: 3px;
 	cursor: pointer;
 }

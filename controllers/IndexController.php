@@ -45,7 +45,6 @@ class UserTags_IndexController extends Omeka_Controller_AbstractActionController
     
     private function _tagResponseHtml($tag)
     {
-        debug($tag);
         if(is_string($tag)) {
             $tag = $this->_helper->db->getTable('Tag')->findOrNew($tag);
         }

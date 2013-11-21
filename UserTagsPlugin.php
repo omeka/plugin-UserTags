@@ -84,33 +84,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
                 }
             }
             
-            $html = "<div class='user-tags'>";
-            $html .= '<h2>My tags</h2>';
-            $html .= "<p class='my-user-tags'>" . __("My tags") . "</p>";
-            $html .= "<div class='user-tags-my'><ul>";
-            $html .= $this->_userItemTagString($myTags, true);
-            $html .= "</ul></div>";
-            
-            if(!empty($itemTags)) {
-                $html .= "<p class='explanation'>" . __('Click existing tags to add them to your own tags.') . "</p>";
-                $html .= "<div class='user-tags-general'><ul>";
-                $html .= $this->_userItemTagString($itemTags, false);
-                $html .= "</ul></div>";
-            }
-            
-            $html .= "<div class='user-tags-new'>";
-            
-            $html .= "<div style='float:left'>";
-            $html .= "<label for='user_tags_new'>" . __("Add Tags") . "</label>";
-            $html .= "<p class='explanation'>" .  __('Separate tags with %s', option('tag_delimiter')) . "</p>";
-            
-            $html .= "</div>";
-            
-            $html .= '<input type="text" name="tags" id="tags" class="textinput" value="" />';
-            $html .= "<button id='user-tags-submit'>" . __("Submit") . "</button>";
-            $html .= "</div>";
-            $html .= '</div>';
-            echo $html;
+            echo $view->partial('index/tags.php', array('tags' => $myTags));
         }
     }
     
@@ -179,26 +153,5 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
             $subSelect->where('user_records_tags.owner_id = ?', $user->id);            
             $select->where('items.id IN (' . (string) $subSelect . ')');            
         }
-    }
-    
-    private function _userItemTagString($tags, $link=true)
-    {
-        $delimiter = get_option('tag_delimiter') . ' ';
-
-        if (empty($tags)) {
-            return '';
-        }
-        
-        $html = '';
-        foreach ($tags as $tag) {
-            $name = $tag['name'];
-            if($link) {
-                $html .= '<li><a href="' . html_escape(url('items/browse')) . '?my-tag=' . $name . '" rel="tag">' . html_escape($name) . '</a>' . "<span id='user-tags-tag-id-{$tag->id}' class='user-tags-tag remove'>" . __('(Remove?)') . "</span></li>";
-            } else {
-                $html .= "<li><span id='user-tags-tag-id-{$tag->id}' class='user-tags-tag'>" . html_escape($name) . "</span></li>";                
-            }
-            
-        }
-        return $html;        
     }
 }

@@ -14,7 +14,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
                 'remove_item_tag',
                 'items_browse_sql'
             );
-    
+
     public function hookInstall()
     {
         $db = $this->_db;
@@ -28,24 +28,24 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
               `added` datetime NOT NULL,
               PRIMARY KEY (`id`),
               UNIQUE KEY `tag` (`record_type`,`record_id`,`tag_id`, `owner_id`)
-            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;        
+            ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
         ";
         $db->query($sql);
-        
+
         set_option('user-tags-private-roles', serialize(array()));
     }
-    
+
     public function hookConfigForm($args)
     {
         include(USER_TAGS_PLUGIN_DIR . '/config_form.php');
     }
-    
+
     public function hookConfig($args)
     {
         $post = $args['post'];
         set_option('user-tags-private-roles', serialize($post['user_tags_private_roles']));
     }
-    
+
     public function hookPublicHead($args)
     {
         $request = Zend_Controller_Front::getInstance()->getRequest();
@@ -59,40 +59,40 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
             queue_js_file('user-tags');
             $js = "UserTags.webRoot = '" . WEB_ROOT . "'; ";
             $js .= "UserTags.itemId = " . $itemId . "; ";
-            queue_js_string($js);            
+            queue_js_string($js);
         }
 
     }
-    
+
     public function hookPublicItemsShow($args)
     {
         if($user = current_user()) {
             $view = $args['view'];
-            $item = $args['item'];        
+            $item = $args['item'];
             $myTags = $this->_db->getTable('UserRecordsTag')->findTagsBy(array('record'=>$item, 'user'=>$user));
-            
+
             //need to remove itemTags that are mine from the list to display
             $myTagsIds = array();
             foreach($myTags as $tag) {
                 $myTagsIds[] = $tag->id;
             }
             $itemTags = $item->Tags;
-            
+
             foreach($itemTags as $index=>$itemTag) {
                 if(in_array($itemTag->id, $myTagsIds)) {
                     unset($itemTags[$index]);
                 }
             }
-            
-            echo $view->partial('index/tags.php', array('tags' => $myTags));
+
+            echo $view->partial('index/tags.php', array('tags' => $myTags, 'link'=>true));
         }
     }
-    
+
     /**
      * Add the UserRecordTag when a tag is added. If the user role's tags are private, also delete the records_tags row
      * @param array $args
      */
-    
+
     public function hookAddItemTag($args)
     {
         $user = current_user();
@@ -111,15 +111,15 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
                 if($recordsTag) {
                     $recordsTag->delete();
                 }
-            }                
+            }
         }
     }
-    
+
     /**
      * Deletes the UserRecordTag
      * @param unknown_type $args
      */
-    
+
     public function hookRemoveItemTag($args)
     {
         if($user && in_array($user->role, unserialize(get_option('user-tags-private-roles')))) {
@@ -134,7 +134,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
             }
         }
     }
-    
+
     public function hookItemsBrowseSql($args)
     {
         $select = $args['select'];
@@ -150,8 +150,8 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
             $subSelect->from(array('user_records_tags'=>$db->UserRecordsTags), array('items.id'=>'user_records_tags.record_id'))
             ->joinInner(array('tags'=>$db->Tag), 'tags.id = user_records_tags.tag_id', array())
             ->where('tags.name = ? AND user_records_tags.`record_type` = "Item"', trim($tagName));
-            $subSelect->where('user_records_tags.owner_id = ?', $user->id);            
-            $select->where('items.id IN (' . (string) $subSelect . ')');            
+            $subSelect->where('user_records_tags.owner_id = ?', $user->id);
+            $select->where('items.id IN (' . (string) $subSelect . ')');
         }
     }
 }

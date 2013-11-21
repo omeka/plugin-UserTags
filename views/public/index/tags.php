@@ -23,11 +23,13 @@
     <?php if(!empty($itemTags)): ?>
         <p class='explanation'><?php echo __('Click existing tags to add them to your own tags.'); ?></p>
         <div class='user-tags-general'><ul>
-        <?php echo $this->_userItemTagString($itemTags, false); ?>
+        <?php foreach($itemTags as $itemTag): ?>
+        <li class='user-tags-tag'><?php echo metadata($itemTag, 'name'); ?></li>
+        <?php endforeach; ?>
         </ul></div>
     <?php endif; ?>
 
-    <div class='user-tags-new'>    
+    <div class='user-tags-new'>
         <div style='float:left'>
             <label for='user_tags_new'><?php echo __("Add Tags") ; ?></label>
             <p class='explanation'><?php echo __('Separate tags with %s', option('tag_delimiter')); ?></p>

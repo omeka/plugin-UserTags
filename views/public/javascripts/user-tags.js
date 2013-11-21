@@ -95,7 +95,7 @@ UserTags.tagChoices = function () {
 };
 
 jQuery(document).ready(function() {
-   jQuery('div.user-tags-general span.user-tags-tag').click(UserTags.addMyTag)
+   jQuery('div.user-tags-general li.user-tags-tag').click(UserTags.addMyTag)
    jQuery('button#user-tags-submit').click(UserTags.addNewTags);
    jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
    UserTags.tagChoices()

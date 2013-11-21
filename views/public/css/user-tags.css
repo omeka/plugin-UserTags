@@ -20,7 +20,7 @@ div.user-tags p {
 }
 
 
-div.user-tags-general span.user-tags-tag {
+div.user-tags-general .user-tags-tag {
 	cursor: pointer;
 }
 

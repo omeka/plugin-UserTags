@@ -84,7 +84,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
                 }
             }
 
-            echo $view->partial('index/tags.php', array('tags' => $myTags, 'link'=>true));
+            echo $view->partial('index/tags.php', array('tags' => $myTags, 'link'=>true, 'itemTags'=>$itemTags));
         }
     }
 

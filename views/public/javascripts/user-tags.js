@@ -11,6 +11,7 @@ var UserTags = {
         addMyTagResponseHandler : function(response, status, jqx) {
             var myTagsEl = jQuery('div.user-tags-my ul');
             var html = myTagsEl.html();
+            jQuery('#user-tags-tag-id-' + response.added).parent('li').remove();
             myTagsEl.html(html + response.html);
             jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
         },

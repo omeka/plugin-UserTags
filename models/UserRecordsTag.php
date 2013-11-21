@@ -14,10 +14,4 @@ class UserRecordsTag extends Omeka_Record_AbstractRecord
         $this->_mixins[] = new Mixin_Timestamp($this, 'added', false);
         $this->_mixins[] = new Mixin_Owner($this);
     }
-    
-    public function afterDelete()
-    {
-        $this->getTable()->count(array('records_tag_id'=>$this->records_tag_id));
-    }
-    
 }

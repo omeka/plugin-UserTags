@@ -7,6 +7,9 @@ class UserTags_IndexController extends Omeka_Controller_AbstractActionController
     {
         $newTags = explode(get_option('tag_delimiter'), $_POST['tags']);
         $newTags = array_map('trim', $newTags);
+        if(empty($newTags[count($newTags) - 1])) {
+            unset($newTags[count($newTags) - 1]);
+        }
         $item = $this->_helper->db->getTable('Item')->find($_POST['itemId']);
         $item->addTags($newTags);
         $item->save();

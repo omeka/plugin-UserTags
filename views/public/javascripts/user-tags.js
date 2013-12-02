@@ -6,14 +6,15 @@ var UserTags = {
             var tag = jQuery(this).html();
             var json = {"tag" : tag, "itemId" : UserTags.itemId};
             jQuery.post(UserTags.webRoot + "/user-tags/index/add-my", json, UserTags.addMyTagResponseHandler);
+            UserTags.refreshTagListeners();
         },
         
         addMyTagResponseHandler : function(response, status, jqx) {
-            var myTagsEl = jQuery('div.user-tags-my ul');
+            var myTagsEl = jQuery('.user-tags ul');
             var html = myTagsEl.html();
             jQuery('#user-tags-tag-id-' + response.added).parent('li').remove();
             myTagsEl.html(html + response.html);
-            jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
+            jQuery('.user-tags-list span.remove').click(UserTags.removeMyTag);
         },
         
         removeMyTag : function() {
@@ -33,16 +34,42 @@ var UserTags = {
             var tags = jQuery('input#tags').val();
             json = {"tags" : tags, "itemId" : UserTags.itemId};
             jQuery.post(UserTags.webRoot + "/user-tags/index/add", json, UserTags.addNewTagsResponseHandler);
+            jQuery('input#tags').val('');
         },
         
         addNewTagsResponseHandler : function(response, status, jqx) {
-            var myTagsEl = jQuery('div.user-tags-my');
+            var myTagsEl = jQuery('.user-tags-list');
             var html = myTagsEl.html();
-            console.log(response);
+            var newTag = jQuery();
+            var newTagId = '';
+            var duplicates = '';
             for(var i=0; i<response.length; i++) {
-                html += response[i].html;
+                newTag = jQuery(response[i].html);
+                newTagId = "#" + newTag.find('span').attr('id');
+                if (jQuery(newTagId).length < 1) {
+                    html += response[i].html;
+                } else {
+                    duplicates += '<li>"' + newTag.find('a').text() + '"</li>';
+                }
             }
             myTagsEl.html(html);
+
+            jQuery('#tag-errors ul').html('');
+
+            if (duplicates.length > 0) {
+                jQuery('#tag-errors ul').append(duplicates);
+                jQuery('#tag-errors').show();
+            } else {
+                jQuery('#tag-errors').hide();
+            }
+            UserTags.refreshTagListeners();
+        },
+        
+        refreshTagListeners : function() {
+            jQuery('div.user-tags-general span.user-tags-tag').unbind("click");
+            jQuery('.user-tags-list span.remove').unbind("click");
+            jQuery('div.user-tags-general span.user-tags-tag').bind("click", UserTags.addMyTag);
+            jQuery('.user-tags-list span.remove').bind("click", UserTags.removeMyTag);
         }
 }
 
@@ -95,12 +122,8 @@ UserTags.tagChoices = function () {
 };
 
 jQuery(document).ready(function() {
-   jQuery('div.user-tags-general li.user-tags-tag').click(UserTags.addMyTag)
    jQuery('button#user-tags-submit').click(UserTags.addNewTags);
-   jQuery('div.user-tags-my span.remove').click(UserTags.removeMyTag);
+   jQuery('div.user-tags-general span.user-tags-tag').bind("click", UserTags.addMyTag);
+   jQuery('.user-tags-list span.remove').bind("click", UserTags.removeMyTag);
    UserTags.tagChoices()
 });
-        
-        
-        
-        

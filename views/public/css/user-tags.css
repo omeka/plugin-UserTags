@@ -28,3 +28,21 @@ div.user-tags-my span.remove {
 	margin-left: 3px;
 	cursor: pointer;
 }
+
+#tag-errors {
+  display: none;
+  margin-bottom: 1em;
+}
+
+#tag-errors * {
+  display: inline;
+  padding: 0;
+}
+
+#tag-errors li {
+  list-style-type: none;
+}
+
+#tag-errors li:not(:last-child):after {
+  content: ", ";
+}

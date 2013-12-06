@@ -10,7 +10,7 @@ var UserTags = {
         },
         
         addMyTagResponseHandler : function(response, status, jqx) {
-            var myTagsEl = jQuery('.user-tags ul');
+            var myTagsEl = jQuery('.user-tags ul.user-tags-list');
             var html = myTagsEl.html();
             jQuery('#user-tags-tag-id-' + response.added).parent('li').remove();
             myTagsEl.html(html + response.html);
@@ -123,7 +123,7 @@ UserTags.tagChoices = function () {
 
 jQuery(document).ready(function() {
    jQuery('button#user-tags-submit').click(UserTags.addNewTags);
-   jQuery('div.user-tags-general span.user-tags-tag').bind("click", UserTags.addMyTag);
+   jQuery('div.user-tags-general li.user-tags-tag').bind("click", UserTags.addMyTag);
    jQuery('.user-tags-list span.remove').bind("click", UserTags.removeMyTag);
    UserTags.tagChoices();
 });

@@ -19,16 +19,24 @@ class Table_UserRecordsTag extends Omeka_Db_Table
                 $privateRoles = array();
             }
             if(in_array($user->role, $privateRoles )) {
+
                 $select = new Omeka_Db_Select;
                 $db = $this->getDb();
                 $select->from(array('tags'=>$db->Tag), array('tags.*', 'tagCount'=>'COUNT(tags.id)'))
                 ->joinInner( array('user_records_tags'=>$db->UserRecordsTags), 'user_records_tags.tag_id = tags.id', array())
                 ->group('tags.id')
                 ->where('user_records_tags.owner_id = ?', $user->id);
+
             } else {
                 $select = $tagTable->getSelectForFindBy($params);
                 $select->joinInner( array('user_records_tags'=>$db->UserRecordsTags), 'user_records_tags.tag_id = tags.id', array());
                 $select->where('user_records_tags.owner_id = ?', $user->id);
+            }
+
+            if(isset($params['record'])) {
+                $record = $params['record'];
+                $select->where('user_records_tags.record_type = ?', get_class($record));
+                $select->where('user_records_tags.record_id = ?', $record->id);
             }
             return $tagTable->fetchObjects($select);
         }

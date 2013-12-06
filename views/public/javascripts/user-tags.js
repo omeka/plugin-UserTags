@@ -71,7 +71,7 @@ var UserTags = {
             jQuery('div.user-tags-general span.user-tags-tag').bind("click", UserTags.addMyTag);
             jQuery('.user-tags-list span.remove').bind("click", UserTags.removeMyTag);
         }
-}
+};
 
 /**
  * Set up autocomplete for tags field.
@@ -83,7 +83,7 @@ var UserTags = {
 
 UserTags.tagChoices = function () {
     var inputSelector = "#tags";
-    var tagChoicesUrl = "http://localhost/Omeka/admin/tags/autocomplete"
+    var tagChoicesUrl = "http://localhost/Omeka/admin/tags/autocomplete";
     UserTags.tagDelimiter = ",";
     function split(val) {
         var escapedTagDelimiter = UserTags.tagDelimiter.replace(/([.?*+\^$\[\]\\(){}\-])/g, "\\$1");
@@ -125,5 +125,5 @@ jQuery(document).ready(function() {
    jQuery('button#user-tags-submit').click(UserTags.addNewTags);
    jQuery('div.user-tags-general span.user-tags-tag').bind("click", UserTags.addMyTag);
    jQuery('.user-tags-list span.remove').bind("click", UserTags.removeMyTag);
-   UserTags.tagChoices()
+   UserTags.tagChoices();
 });

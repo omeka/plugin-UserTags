@@ -78,12 +78,6 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
             }
             $itemTags = $item->Tags;
 
-            foreach($itemTags as $index=>$itemTag) {
-                if(in_array($itemTag->id, $myTagsIds)) {
-                    unset($itemTags[$index]);
-                }
-            }
-
             echo $view->partial('index/tags.php', array('tags' => $myTags, 'link'=>true, 'itemTags'=>$itemTags));
         }
     }

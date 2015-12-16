@@ -66,7 +66,8 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookPublicItemsShow($args)
     {
-        if($user = current_user()) {
+        $user = current_user();
+        if ($user) {
             $view = $args['view'];
             $item = $args['item'];
             $myTags = $this->_db->getTable('UserRecordsTag')->findTagsBy(array('record'=>$item, 'user'=>$user));
@@ -116,6 +117,7 @@ class UserTagsPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookRemoveItemTag($args)
     {
+        $user = current_user();
         if($user && in_array($user->role, unserialize(get_option('user-tags-private-roles')))) {
             $item = $args['record'];
             $removed = $args['removed'];
